@@ -1,0 +1,1040 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Workstation Quotation — AtoZ IT Solutions</title>
+    <meta name="description"
+        content="Workstation quotation with dynamic totals, logo upload and print-friendly layout." />
+    <style>
+        /* ====== Theme variables ====== */
+        :root {
+            --bg-grad-start: #667eea;
+            --bg-grad-end: #764ba2;
+            --card-bg: #fff;
+            --accent: #3498db;
+            --muted: #6b7280;
+            --success: #27ae60;
+            --danger: #e53e3e;
+            --surface: #f8fafc;
+            --radius: 12px;
+            --shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
+            --max-width: 980px;
+            --print-border: 1px solid #222;
+            --focus: 3px solid rgba(52, 152, 219, 0.2);
+            --font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* ====== Reset & base ====== */
+        * {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            height: 100%
+        }
+
+        body {
+            margin: 0;
+            font-family: var(--font-family);
+            color: #1f2937;
+            line-height: 1.45;
+            background: linear-gradient(135deg, var(--bg-grad-start) 0%, var(--bg-grad-end) 100%);
+            padding: 28px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        a {
+            color: var(--accent)
+        }
+
+        .wrap {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden
+        }
+
+        /* ====== Header ====== */
+        header.header {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 22px 26px;
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: #fff;
+        }
+
+        .logo-drop {
+            width: 82px;
+            height: 82px;
+            border-radius: 10px;
+            border: 2px dashed rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            position: relative;
+            transition: all .18s ease;
+            overflow: hidden;
+        }
+
+        .logo-drop.dragover {
+            border-color: rgba(255, 255, 255, 0.65);
+            transform: translateY(-3px)
+        }
+
+        .logo-drop img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block
+        }
+
+        .logo-drop .placeholder {
+            font-size: 12px;
+            text-align: center;
+            padding: 6px;
+            opacity: 0.9
+        }
+
+        .company-title h1 {
+            font-size: 1.45rem;
+            margin: 0;
+            font-weight: 600
+        }
+
+        .company-title p {
+            margin: 3px 0 0;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95rem
+        }
+
+        /* toolbar */
+        .toolbar {
+            display: flex;
+            gap: 8px;
+            margin: 12px;
+            padding: 10px 18px;
+            align-items: center;
+            justify-content: space-between
+        }
+
+        .toolbar-left {
+            display: flex;
+            gap: 8px;
+            align-items: center
+        }
+
+        .btn {
+            background: #fff;
+            color: #2c3e50;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            cursor: pointer;
+            font-weight: 600
+        }
+
+        .btn.ghost {
+            background: transparent;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.18)
+        }
+
+        .btn.warn {
+            background: var(--success);
+            color: #fff
+        }
+
+        .control {
+            display: inline-flex;
+            gap: 8px;
+            align-items: center
+        }
+
+        /* ====== Quote info ====== */
+        main {
+            padding: 18px
+        }
+
+        .quote-info {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+            padding: 14px;
+            border-bottom: 1px solid #eef2f7;
+            background: var(--surface)
+        }
+
+        .quote-meta {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px
+        }
+
+        .meta-row {
+            font-size: 0.95rem
+        }
+
+        .meta-row strong {
+            color: #0f172a
+        }
+
+        .date-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center
+        }
+
+        /* ====== Components table ====== */
+        .components {
+            padding: 18px
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px
+        }
+
+        .section-title h2 {
+            margin: 0;
+            font-size: 1.15rem;
+            color: #0f172a
+        }
+
+        .table-wrap {
+            overflow: auto;
+            border-radius: 8px;
+            border: 1px solid #e6eef7;
+            background: #fff
+        }
+
+        table.component-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 720px
+        }
+
+        table.component-table caption {
+            padding: 12px 14px;
+            font-weight: 700;
+            text-align: left
+        }
+
+        table th,
+        table td {
+            padding: 12px 14px;
+            text-align: left;
+            border-bottom: 1px solid #f0f4f8
+        }
+
+        table th {
+            background: #0f172a;
+            color: #fff;
+            font-weight: 600
+        }
+
+        table td:nth-child(3),
+        table th:nth-child(3) {
+            text-align: right
+        }
+
+        table td.qty {
+            width: 90px
+        }
+
+        .price-label {
+            font-weight: 700;
+            color: var(--success)
+        }
+
+        .price-free {
+            color: #64748b;
+            font-weight: 600
+        }
+
+        /* quantity input */
+        input.qty-input {
+            width: 60px;
+            padding: 6px;
+            border-radius: 6px;
+            border: 1px solid #dbe7f4;
+            text-align: right
+        }
+
+        input.qty-input:focus {
+            outline: none;
+            box-shadow: var(--focus)
+        }
+
+        /* inline-edit price */
+        .price-edit {
+            cursor: pointer;
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 6px
+        }
+
+        .price-edit:focus {
+            outline: none;
+            box-shadow: var(--focus)
+        }
+
+        /* total section */
+        .total-section {
+            display: flex;
+            gap: 18px;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px;
+            border-top: 1px solid #eef2f7;
+            background: var(--surface)
+        }
+
+        .total-breakdown {
+            max-width: 60%
+        }
+
+        .total-breakdown div {
+            margin-bottom: 8px
+        }
+
+        .grand {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: var(--success);
+            text-align: right
+        }
+
+        .small-muted {
+            font-size: 0.9rem;
+            color: var(--muted)
+        }
+
+        /* value adds / notes */
+        .row {
+            display: flex;
+            gap: 18px
+        }
+
+        .value-adds,
+        .notes {
+            flex: 1;
+            padding: 14px;
+            border-radius: 8px;
+            background: #f8fffa;
+            border: 1px solid #e0f0e8
+        }
+
+        .notes {
+            background: #fff8e6;
+            border: 1px solid #fdeec2
+        }
+
+        .value-adds h3,
+        .notes h3 {
+            margin: 0 0 8px 0
+        }
+
+        /* footer */
+        footer.footer {
+            background: #0f172a;
+            color: #fff;
+            padding: 14px 18px;
+            text-align: center;
+            font-size: 0.95rem
+        }
+
+        /* focus states */
+        button:focus,
+        input:focus,
+        select:focus {
+            outline: none;
+            box-shadow: var(--focus)
+        }
+
+        /* small utilities */
+        .muted {
+            color: var(--muted)
+        }
+
+        .flex {
+            display: flex;
+            align-items: center
+        }
+
+        .spacer {
+            flex: 1
+        }
+
+        /* responsive */
+        @media (max-width:800px) {
+            .quote-info {
+                grid-template-columns: 1fr
+            }
+
+            .quote-meta {
+                grid-template-columns: 1fr
+            }
+
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch
+            }
+
+            table.component-table {
+                min-width: 600px
+            }
+        }
+
+        /* ===== Print styles ===== */
+        @media print {
+            body {
+                background: #fff;
+                padding: 0;
+                color: #000
+            }
+
+            .wrap {
+                box-shadow: none;
+                border-radius: 0
+            }
+
+            .toolbar,
+            .no-print,
+            .logo-drop .controls,
+            input,
+            button,
+            .btn,
+            .muted,
+            .toolbar-left {
+                display: none !important
+            }
+
+            header.header {
+                background: transparent;
+                color: #000;
+                padding: 12px
+            }
+
+            .logo-drop {
+                border: none
+            }
+
+            table.component-table {
+                min-width: 0;
+                width: 100%
+            }
+
+            table th,
+            table td {
+                padding: 8px;
+                font-size: 12pt
+            }
+
+            .total-section {
+                border-top: var(--print-border);
+                padding: 12px
+            }
+
+            .value-adds,
+            .notes {
+                border-left: 6px solid #000;
+                margin: 6px 0;
+                padding: 10px
+            }
+
+            @page {
+                margin: 12mm
+            }
+
+            .instructions {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap" role="document" aria-label="Quotation document">
+        <header class="header" role="banner">
+            <div id="logoFrame" class="logo-drop" tabindex="0"
+                aria-label="Company logo upload area (drag & drop or click)">
+                <div id="logoPlaceholder" class="placeholder">Company<br>Logo</div>
+                <img id="logoPreview" alt="Company logo preview" style="display:none">
+            </div>
+
+            <div class="company-title">
+                <h1 id="companyName">AtoZ IT Solutions</h1>
+                <p id="companyTagline">Designing | Office Work | Documentation</p>
+            </div>
+
+            <div class="spacer"></div>
+
+            <div class="no-print toolbar-right" aria-hidden="true">
+                <div class="toolbar-left">
+                    <label class="btn" for="logoUpload" style="display:inline-flex;align-items:center;gap:8px">
+                        Upload Logo
+                        <input id="logoUpload" type="file" accept="image/*" style="display:none" aria-hidden="true">
+                    </label>
+                    <button id="resetLogo" class="btn" title="Remove current logo">Reset Logo</button>
+                    <button id="printBtn" class="btn warn" title="Print or save as PDF">Print / Download</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="toolbar no-print" style="padding:10px 18px;display:flex;align-items:center;gap:10px">
+            <div class="control">
+                <label class="small-muted" for="validUntil">Valid Until</label>
+                <input id="validUntil" type="date"
+                    style="padding:6px;border-radius:6px;border:1px solid #dbe7f4;margin-left:8px">
+            </div>
+
+            <div class="control">
+                <label class="small-muted" for="gstToggle">Include GST</label>
+                <input id="gstToggle" type="checkbox" style="margin-left:8px">
+                <input id="gstPercent" type="number" value="18" min="0" max="99"
+                    style="width:70px;margin-left:8px;padding:6px;border-radius:6px;border:1px solid #dbe7f4"> %
+            </div>
+
+            <div class="spacer"></div>
+
+            <div class="control">
+                <button id="saveQuote" class="btn" title="Save quote to local storage">Save Quote</button>
+                <button id="loadQuote" class="btn" title="Load saved quote">Load Quote</button>
+                <button id="clearSaved" class="btn" title="Clear saved quote">Clear Saved</button>
+            </div>
+        </div>
+
+        <!-- Quote Info -->
+        <main>
+            <section class="quote-info" aria-labelledby="quoteDetailsHeading">
+                <div class="quote-meta" id="quoteDetailsHeading" role="region" aria-label="Quote details">
+                    <div class="meta-row"><strong>Quote ID:</strong> <span id="quoteId">INV-2025-037</span></div>
+                    <div class="meta-row"><strong>Quote Date:</strong> <span id="quoteDate"></span></div>
+                    <div class="meta-row"><strong>Supplier:</strong> <span id="supplier">AtoZ IT Solutions</span></div>
+                    <div class="meta-row"><strong>Configuration:</strong> <span id="configuration">Mixed Workstation
+                            Build - B2</span></div>
+                </div>
+
+                <div class="flex date-controls" aria-hidden="true">
+                    <div class="small-muted">Verified pricing as of <span id="verifiedDate">September 2025</span></div>
+                </div>
+            </section>
+
+            <!-- Components -->
+            <section class="components" aria-labelledby="componentsHeading">
+                <div class="section-title">
+                    <h2 id="componentsHeading">System Components</h2>
+                    <div class="instructions small-muted">
+                        Double-click a price to edit it. Click on Component or Specification text to edit directly.
+                        Change quantities to update totals.
+                    </div>
+                </div>
+
+                <div class="table-wrap" role="table" aria-label="System components and pricing">
+                    <table class="component-table" role="presentation">
+                        <caption>System Components and Pricing</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Component</th>
+                                <th scope="col">Specification</th>
+                                <th scope="col">Price (₹)</th>
+                                <th scope="col">Qty</th>
+                                <th scope="col">Line Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="componentsBody">
+                            <!-- Rows use data-price in INR number (no commas) -->
+                            <tr data-price="9000">
+                                <td><strong>Processor</strong></td>
+                                <td>AMD Ryzen 3.4ghz</td>
+                                <td class="price-cell"><span class="price-label">₹9,000</span></td>
+                                <td class="qty"><input class="qty-input" type="number" min="1" value="1"
+                                        aria-label="Processor quantity"></td>
+                                <td class="line-total" aria-live="polite">₹9,000</td>
+                            </tr>
+
+                            <tr data-price="3850">
+                                <td><strong>Motherboard</strong></td>
+                                <td>Gigabyte B250M</td>
+                                <td class="price-cell"><span class="price-label">₹3,850</span></td>
+                                <td class="qty"><input class="qty-input" type="number" min="1" value="1"
+                                        aria-label="Motherboard quantity"></td>
+                                <td class="line-total">₹3,850</td>
+                            </tr>
+
+                            <tr data-price="3000">
+                                <td><strong>RAM</strong></td>
+                                <td>16GB DDR4 2400MHz (2x8GB Module)</td>
+                                <td class="price-cell"><span class="price-label">₹3,000</span></td>
+                                <td class="qty"><input class="qty-input" type="number" min="1" value="1"
+                                        aria-label="RAM quantity"></td>
+                                <td class="line-total">₹3,000</td>
+                            </tr>
+
+                            <tr data-price="2100">
+                                <td><strong>Storage</strong></td>
+                                <td>256GB NVMe M.2 SSD (Gen3)</td>
+                                <td class="price-cell"><span class="price-label">₹2,100</span></td>
+                                <td class="qty"><input class="qty-input" type="number" min="1" value="1"
+                                        aria-label="Storage quantity"></td>
+                                <td class="line-total">₹2,100</td>
+                            </tr>
+
+                            <tr data-price="3250">
+                                <td><strong>Power Supply</strong></td>
+                                <td>Zebronics 450W non-modular</td>
+                                <td class="price-cell"><span class="price-label">₹3,250</span></td>
+                                <td class="qty"><input class="qty-input" type="number" min="1" value="1"
+                                        aria-label="PSU quantity"></td>
+                                <td class="line-total">₹3,250</td>
+                            </tr>
+
+                            <tr data-price="1500">
+                                <td><strong>Cabinet</strong></td>
+                                <td>Mid-Tower ATX Case - Multi USB support and CD Drive</td>
+                                <td class="price-cell"><span class="price-label">₹1,500</span></td>
+                                <td class="qty"><input class="qty-input" type="number" min="1" value="1"
+                                        aria-label="Cabinet quantity"></td>
+                                <td class="line-total">₹1,500</td>
+                            </tr>
+
+                            <tr data-price="0">
+                                <td><strong>CPU Cooler</strong></td>
+                                <td>Heatsink with lithium paste</td>
+                                <td class="price-cell"><span class="price-free">FREE</span></td>
+                                <td class="qty"><input class="qty-input" type="number" min="1" value="1"
+                                        aria-label="Cooler quantity"></td>
+                                <td class="line-total">₹0</td>
+                            </tr>
+
+                            <tr data-price="6900">
+                                <td><strong>Monitor</strong></td>
+                                <td>Dell 24" FHD (1920x1080p) IPS</td>
+                                <td class="price-cell"><span class="price-label">₹6,900</span></td>
+                                <td class="qty"><input class="qty-input" type="number" min="1" value="1"
+                                        aria-label="Monitor quantity"></td>
+                                <td class="line-total">₹6,900</td>
+                            </tr>
+
+                            <tr data-price="2000">
+                                <td><strong>Dongle</strong></td>
+                                <td>Wifi 300mbps + Bluetooth 5.3</td>
+                                <td class="price-cell"><span class="price-label">₹2,000</span></td>
+                                <td class="qty"><input class="qty-input" type="number" min="1" value="1"
+                                        aria-label="Dongle quantity"></td>
+                                <td class="line-total">₹2,000</td>
+                            </tr>
+
+                            <tr data-price="3000">
+                                <td><strong>Accessories</strong></td>
+                                <td>Wireless Mouse and Keyboard (BT/2.4g), Windows 10 Pro</td>
+                                <td class="price-cell"><span class="price-label">₹3,000</span></td>
+                                <td class="qty"><input class="qty-input" type="number" min="1" value="1"
+                                        aria-label="Accessories quantity"></td>
+                                <td class="line-total">₹3,000</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="4" style="text-align:right;padding:12px 14px;font-weight:700">Subtotal:
+                                </td>
+                                <td style="padding:12px 14px;font-weight:700" id="subtotal">₹0</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <!-- totals, values & notes -->
+                <div class="total-section" role="region" aria-label="Totals and actions">
+                    <div class="total-breakdown">
+                        <div><strong>Components Subtotal:</strong> <span id="subtotalLabel"
+                                class="small-muted">₹0</span></div>
+                        <div><strong>Assembly & Testing:</strong> <span class="small-muted">Complimentary</span></div>
+                        <div class="small-muted" style="margin-top:8px">Value Adds: Choice of <strong>4 Paid Software
+                                Licenses</strong> (worth ₹500 each) - FREE</div>
+                        <div class="notes" style="margin-top:10px;padding:10px;border-radius:6px">
+                            <strong>Important Notes:</strong>
+                            <ul style="margin:8px 0 0 18px;">
+                                <li>6 months unconditional service with warranty included.</li>
+                                <li>Prices verified as of <span id="verifiedFullDate">September 2025</span>.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div style="min-width:260px;text-align:right">
+                        <div style="margin-bottom:8px">
+                            <label class="small-muted">GST (<span id="gstPercentLabel">18</span> %):</label>
+                            <div id="gstAmount" class="small-muted">₹0</div>
+                        </div>
+                        <div class="grand">
+                            <div id="grandTotalLabel">₹0</div>
+                            <div class="small-muted" style="font-size:12px;margin-top:6px">Final Price</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- value adds and notes for visual -->
+                <div style="padding:18px;display:flex;gap:14px;flex-wrap:wrap">
+                    <div class="value-adds" style="min-width:260px;">
+                        <h3>Complimentary Value Adds:</h3>
+                        <ul style="margin:8px 0 0 18px;">
+                            <li>Choice of <strong>4 Paid Software Licenses</strong> (worth ₹500 each) - FREE</li>
+                            <li><strong>Assembly & Testing</strong> - Complimentary</li>
+                        </ul>
+                    </div>
+
+                    <div class="notes" style="min-width:260px;">
+                        <h3>Important Notes:</h3>
+                        <ul style="margin:8px 0 0 18px;">
+                            <li>6 months unconditional service with warranty included.</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </section>
+        </main>
+
+        <footer class="footer" role="contentinfo">
+            <div class="contact">📞 +91-7773905451 / 8779185464 | ✉️ <a href="mailto:imanriyaj@gmail.com"
+                    style="color:#fff">imanriyaj@gmail.com</a></div>
+            <div style="margin-top:6px;font-size:0.86rem;opacity:0.9">AtoZ IT Solutions — Trusted custom builds</div>
+        </footer>
+    </div>
+
+    <script>
+        /* ===== Utilities ===== */
+        const $ = sel => document.querySelector(sel);
+        const $$ = sel => Array.from(document.querySelectorAll(sel));
+
+        function formatINR(amount) {
+            // integer rupees (no paise)
+            return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(Math.round(amount));
+        }
+
+        function parseNumberFrom(value) {
+            if (value === null || value === undefined) return 0;
+            if (typeof value === 'number') return value;
+            const s = String(value).trim();
+            if (!s) return 0;
+            if (/free/i.test(s)) return 0;
+            // remove non numerics except dot and minus
+            const cleaned = s.replace(/[^\d.-]/g, '');
+            const n = parseFloat(cleaned);
+            return Number.isFinite(n) ? n : 0;
+        }
+
+        /* ===== DOM refs ===== */
+        const componentsBody = $('#componentsBody');
+        const subtotalEl = $('#subtotal');
+        const subtotalLabel = $('#subtotalLabel');
+        const gstToggle = $('#gstToggle');
+        const gstPercent = $('#gstPercent');
+        const gstPercentLabel = $('#gstPercentLabel');
+        const gstAmountEl = $('#gstAmount');
+        const grandTotalEl = $('#grandTotalLabel');
+        const printBtn = $('#printBtn');
+        const logoUpload = $('#logoUpload');
+        const logoFrame = $('#logoFrame');
+        const logoPreview = $('#logoPreview');
+        const logoPlaceholder = $('#logoPlaceholder');
+        const validUntil = $('#validUntil');
+        const quoteDateEl = $('#quoteDate');
+        const verifiedDateEl = $('#verifiedDate');
+        const verifiedFullDate = $('#verifiedFullDate');
+        const saveQuoteBtn = $('#saveQuote');
+        const loadQuoteBtn = $('#loadQuote');
+        const clearSavedBtn = $('#clearSaved');
+        const resetLogoBtn = $('#resetLogo');
+
+        /* init dates */
+        (function initDates() {
+            const now = new Date();
+            const y = now.getFullYear(), m = String(now.getMonth() + 1).padStart(2, '0'), d = String(now.getDate()).padStart(2, '0');
+            quoteDateEl.textContent = now.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+            verifiedDateEl.textContent = `${now.toLocaleString('en-IN', { month: 'long', year: 'numeric' })}`;
+            verifiedFullDate.textContent = verifiedDateEl.textContent;
+            // default valid until: +7 days
+            const future = new Date(now.getTime() + 7 * 24 * 3600 * 1000);
+            validUntil.value = future.toISOString().slice(0, 10);
+        })();
+
+        /* ===== Recalculate totals ===== */
+        function recalcTotals() {
+            const rows = Array.from(componentsBody.querySelectorAll('tr'));
+            let subtotal = 0;
+            rows.forEach(row => {
+                const basePrice = parseNumberFrom(row.dataset.price);
+                const qtyInput = row.querySelector('.qty-input');
+                const qty = Math.max(0, parseInt(qtyInput.value || '0', 10));
+                const lineTotal = basePrice * qty;
+                subtotal += lineTotal;
+                const lineTotalCell = row.querySelector('.line-total');
+                lineTotalCell.textContent = formatINR(lineTotal);
+                // update displayed price (keep FREE if price=0)
+                const priceCell = row.querySelector('.price-cell');
+                if (basePrice === 0) {
+                    priceCell.innerHTML = `<span class="price-free">FREE</span>`;
+                } else {
+                    priceCell.innerHTML = `<span class="price-label">${formatINR(basePrice)}</span>`;
+                }
+            });
+
+            subtotalEl.textContent = formatINR(subtotal);
+            subtotalLabel.textContent = formatINR(subtotal);
+
+            const gstOn = gstToggle.checked;
+            const gstPct = parseFloat(gstPercent.value) || 0;
+            gstPercentLabel.textContent = gstPct;
+            let gstAmt = 0;
+            if (gstOn && gstPct > 0) {
+                gstAmt = subtotal * (gstPct / 100);
+            }
+            gstAmountEl.textContent = formatINR(gstAmt);
+
+            const grand = subtotal + gstAmt;
+            grandTotalEl.textContent = formatINR(grand);
+        }
+
+        /* ===== Inline price editing (double click) ===== */
+        function enableInlinePriceEditing() {
+            componentsBody.addEventListener('dblclick', function (e) {
+                const priceCell = e.target.closest('.price-cell');
+                if (!priceCell) return;
+                const row = priceCell.closest('tr');
+                const currentPrice = parseNumberFrom(row.dataset.price);
+                // create input
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.value = currentPrice === 0 ? '' : currentPrice;
+                input.style.padding = '6px';
+                input.style.borderRadius = '6px';
+                input.style.border = '1px solid #cfe3f1';
+                input.style.width = '120px';
+                priceCell.innerHTML = '';
+                priceCell.appendChild(input);
+                input.focus();
+                input.select();
+
+                function commit() {
+                    const newVal = parseNumberFrom(input.value);
+                    row.dataset.price = String(newVal);
+                    recalcTotals();
+                }
+                input.addEventListener('blur', commit, { once: true });
+                input.addEventListener('keydown', function (ev) {
+                    if (ev.key === 'Enter') { input.blur(); }
+                    if (ev.key === 'Escape') { recalcTotals(); }
+                });
+            });
+        }
+
+        /* ===== Logo upload + drag & drop + persistence ===== */
+        function handleFileUpload(file) {
+            if (!file) return;
+            if (!file.type.startsWith('image/')) { alert('Please upload an image file.'); return; }
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const dataUrl = ev.target.result;
+                logoPreview.src = dataUrl;
+                logoPreview.style.display = 'block';
+                logoPlaceholder.style.display = 'none';
+                logoFrame.classList.add('has-logo');
+                // persist
+                try { localStorage.setItem('quote_logo', dataUrl); } catch (e) { }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function loadStoredLogo() {
+            try {
+                const saved = localStorage.getItem('quote_logo');
+                if (saved) {
+                    logoPreview.src = saved;
+                    logoPreview.style.display = 'block';
+                    logoPlaceholder.style.display = 'none';
+                    logoFrame.classList.add('has-logo');
+                }
+            } catch (e) { }
+        }
+
+        /* Add drag & drop and click handlers */
+        (function logoHandlers() {
+            loadStoredLogo();
+
+            logoUpload.addEventListener('change', function (e) {
+                const f = e.target.files && e.target.files[0];
+                handleFileUpload(f);
+            });
+
+            ['dragenter', 'dragover'].forEach(ev => {
+                logoFrame.addEventListener(ev, (e) => {
+                    e.preventDefault(); e.stopPropagation();
+                    logoFrame.classList.add('dragover');
+                });
+            });
+            ['dragleave', 'drop'].forEach(ev => {
+                logoFrame.addEventListener(ev, (e) => {
+                    e.preventDefault(); e.stopPropagation();
+                    logoFrame.classList.remove('dragover');
+                });
+            });
+
+            logoFrame.addEventListener('drop', (e) => {
+                const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+                handleFileUpload(f);
+            });
+
+            // keyboard accessible: Enter or Space triggers file dialog
+            logoFrame.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    logoUpload.click();
+                }
+            });
+
+            resetLogoBtn.addEventListener('click', () => {
+                logoPreview.src = '';
+                logoPreview.style.display = 'none';
+                logoPlaceholder.style.display = 'block';
+                logoFrame.classList.remove('has-logo');
+                try { localStorage.removeItem('quote_logo'); } catch (e) { }
+            });
+        })();
+
+        /* ===== Add listeners to qty inputs and GST toggle ===== */
+        function attachListeners() {
+            // qty listeners (event delegation)
+            componentsBody.addEventListener('input', function (e) {
+                if (e.target.classList.contains('qty-input')) {
+                    if (e.target.value === '' || parseInt(e.target.value, 10) < 0) e.target.value = 0;
+                    recalcTotals();
+                }
+            });
+
+            gstToggle.addEventListener('change', recalcTotals);
+            gstPercent.addEventListener('input', recalcTotals);
+
+            printBtn.addEventListener('click', function () {
+                // set a print-friendly title
+                const originalTitle = document.title;
+                document.title = `${$('#quoteId').textContent} — Quote`;
+                window.print();
+                document.title = originalTitle;
+            });
+
+            saveQuoteBtn.addEventListener('click', () => {
+                // gather state
+                const rows = Array.from(componentsBody.querySelectorAll('tr')).map(r => ({
+                    component: r.cells[0].textContent.trim(),
+                    spec: r.cells[1].textContent.trim(),
+                    price: parseNumberFrom(r.dataset.price),
+                    qty: parseInt((r.querySelector('.qty-input') || { value: 1 }).value, 10) || 0
+                }));
+                const state = {
+                    id: $('#quoteId').textContent,
+                    date: quoteDateEl.textContent,
+                    validUntil: validUntil.value,
+                    gstEnabled: gstToggle.checked,
+                    gstPercent: parseFloat(gstPercent.value) || 0,
+                    rows
+                };
+                try {
+                    localStorage.setItem('saved_quote', JSON.stringify(state));
+                    alert('Quote saved locally (browser storage).');
+                } catch (e) { alert('Unable to save quote.'); }
+            });
+
+            loadQuoteBtn.addEventListener('click', () => {
+                try {
+                    const s = localStorage.getItem('saved_quote');
+                    if (!s) { alert('No saved quote found.'); return; }
+                    const state = JSON.parse(s);
+                    if (state.validUntil) validUntil.value = state.validUntil;
+                    gstToggle.checked = !!state.gstEnabled;
+                    gstPercent.value = state.gstPercent || 0;
+                    // map rows back
+                    const rows = state.rows || [];
+                    const tableRows = Array.from(componentsBody.querySelectorAll('tr'));
+                    tableRows.forEach((tr, idx) => {
+                        const r = rows[idx];
+                        if (!r) return;
+                        tr.dataset.price = String(r.price || 0);
+                        const priceCell = tr.querySelector('.price-cell');
+                        if (r.price === 0) priceCell.innerHTML = `<span class="price-free">FREE</span>`;
+                        else priceCell.innerHTML = `<span class="price-label">${formatINR(r.price)}</span>`;
+                        const q = tr.querySelector('.qty-input');
+                        if (q) q.value = r.qty || 1;
+                    });
+                    recalcTotals();
+                    alert('Quote loaded.');
+                } catch (e) { alert('Failed to load saved quote.'); }
+            });
+
+            clearSavedBtn.addEventListener('click', () => {
+                if (confirm('Clear saved quote from browser storage?')) {
+                    localStorage.removeItem('saved_quote');
+                    alert('Saved quote cleared.');
+                }
+            });
+        }
+
+        /* initialize price editing and recalc on load */
+        (function init() {
+            enableInlinePriceEditing();
+            attachListeners();
+            recalcTotals();
+        })();
+
+        // Enable inline editing for Component and Specification columns
+        document.querySelectorAll('#componentsBody tr').forEach(row => {
+            const componentCell = row.cells[0]; // Component column
+            const specCell = row.cells[1];      // Specification column
+            const priceCell = row.cells[2];     // Price column (already has logic)
+
+            // Make Component and Specification editable
+            componentCell.contentEditable = true;
+            specCell.contentEditable = true;
+
+            // Optional: Double-click to edit price (keeps behavior consistent)
+            priceCell.addEventListener("dblclick", () => {
+                const span = priceCell.querySelector(".price-label, .price-free");
+                if (span) {
+                    const oldValue = span.textContent.replace(/[^\d]/g, "") || "0";
+                    const input = document.createElement("input");
+                    input.type = "number";
+                    input.value = oldValue;
+                    input.style.width = "80px";
+
+                    priceCell.innerHTML = "";
+                    priceCell.appendChild(input);
+                    input.focus();
+
+                    input.addEventListener("blur", () => {
+                        let newValue = parseFloat(input.value) || 0;
+                        row.dataset.price = newValue;
+                        priceCell.innerHTML = newValue > 0
+                            ? `<span class="price-label">₹${newValue.toLocaleString("en-IN")}</span>`
+                            : `<span class="price-free">FREE</span>`;
+
+                        // Trigger your existing total recalculation function
+                        if (typeof updateTotals === "function") updateTotals();
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
